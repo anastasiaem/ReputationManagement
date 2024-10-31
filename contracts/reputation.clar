@@ -39,3 +39,20 @@
         action-type: (string-ascii 20)
     }
 )
+
+;; Public Functions
+
+;; Register a new DApp
+(define-public (register-dapp (dapp-name (string-ascii 50)) (weight uint))
+    (begin
+        (asserts! (is-contract-owner tx-sender) ERR_UNAUTHORIZED)
+        (ok (map-set DAppRegistry
+            tx-sender
+            {
+                name: dapp-name,
+                weight: weight,
+                is-active: true
+            }
+        ))
+    )
+)
