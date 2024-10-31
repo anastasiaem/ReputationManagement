@@ -118,3 +118,16 @@
         )
     )
 )
+
+;; Calculate new weighted score
+(define-private (calculate-new-score (old-score uint) (new-weighted-score uint) (count uint))
+    (if (is-eq count u0)
+        new-weighted-score
+        (/ (+ (* old-score count) new-weighted-score) (+ count u1))
+    )
+)
+
+;; Check if caller is contract owner
+(define-private (is-contract-owner (caller principal))
+    (is-eq caller CONTRACT_OWNER)
+)
