@@ -56,3 +56,32 @@
         ))
     )
 )
+
+;; Report user behavior and update reputation
+(define-public (report-interaction
+    (user principal)
+    (score uint)
+    (action-type (string-ascii 20)))
+    (let
+        (
+            (dapp-info (unwrap! (map-get? DAppRegistry tx-sender) ERR_DAPP_NOT_REGISTERED))
+            (current-time (get-block-info? time (- block-height u1)))
+        )
+        (asserts! (and (>= score MIN_SCORE) (<= score MAX_SCORE)) ERR_INVALID_SCORE)
+        (asserts! (get is-active dapp-info) ERR_DAPP_NOT_REGISTERED)
+
+        ;; Record the interaction
+        (map-set Interactions
+            {user: user, dapp: tx-sender}
+            {
+                score: score,
+                timestamp: (default-to u0 current-time),
+                action-type: action-type
+            }
+        )
+
+        ;; Update user's total score
+        (update-user-score user score (get weight dapp-info))
+        (ok true)
+    )
+)
