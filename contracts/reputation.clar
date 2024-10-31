@@ -93,3 +93,28 @@
         (map-get? UserScores user)
     )
 )
+
+;; Private Functions
+
+;; Update user's reputation score
+(define-private (update-user-score (user principal) (new-score uint) (weight uint))
+    (let
+        (
+            (current-data (get-user-score user))
+            (current-count (get interaction-count current-data))
+            (weighted-score (* new-score weight))
+        )
+        (map-set UserScores
+            user
+            {
+                total-score: (calculate-new-score
+                    (get total-score current-data)
+                    weighted-score
+                    current-count
+                ),
+                interaction-count: (+ current-count u1),
+                last-updated: (default-to u0 (get-block-info? time (- block-height u1)))
+            }
+        )
+    )
+)
