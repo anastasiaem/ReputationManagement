@@ -85,3 +85,11 @@
         (ok true)
     )
 )
+
+;; Get user's current reputation score
+(define-read-only (get-user-score (user principal))
+    (default-to
+        {total-score: INITIAL_SCORE, interaction-count: u0, last-updated: u0}
+        (map-get? UserScores user)
+    )
+)
